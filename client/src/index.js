@@ -1,35 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 import {render} from 'react-dom'
 import {transitions, positions, Provider as AlertProvider } from 'react-alert'
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import './index.css'
+import App from './App'
+import * as serviceWorker from './serviceWorker'
 import {BaseLayout} from './components/BaseLayout'
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
-import {AddBook} from './components/AddBook';
+import {AddBook} from './components/AddBook'
 import {BookList} from './components/BookList'
 import {UpdateBook} from './components/UpdateBook'
 import {BookDetail} from './components/BookDetail'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { createStore } from 'redux'
 import rootReducer from './store/reducer'
 import { Provider } from 'react-redux'
-import { devToolsEnhancer } from 'redux-devtools-extension';
+import { devToolsEnhancer } from 'redux-devtools-extension'
 
 const store = createStore(rootReducer, /* preloadedState, */
   devToolsEnhancer(
     // Specify custom devTools options
-  ));
-
-const options = {
-  // you can also just use 'bottom center'
-  position: positions.BOTTOM_CENTER,
-  timeout: 5000,
-  offset: '30px',
-  // you can also just use 'scale'
-  transition: transitions.SCALE
-}
+  ))
 
 ReactDOM.render(
   <Provider store = {store}>
@@ -46,7 +37,7 @@ ReactDOM.render(
   </BrowserRouter>
   </Provider>
 
-  ,document.getElementById('root'));
+  ,document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
