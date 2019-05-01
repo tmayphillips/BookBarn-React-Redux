@@ -1,6 +1,6 @@
 // set up the initial state
 const initialState = {
-  counter: 99, // each one is called a slice
+  counter: 0, // each one is called a slice
   books: [],
   inAuthenticated: false
 }

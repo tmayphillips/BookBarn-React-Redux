@@ -14,14 +14,7 @@ const App = () => {
 
   return (
     <div>
-    <h1>Home Page</h1>
-    <button
-      onClick={() => {
-        alert.show('Oh look, an alert!')
-      }}
-    >
-      Show Alert
-    </button>
+      <h1>Home Page</h1>
     </div>
   )
 }
