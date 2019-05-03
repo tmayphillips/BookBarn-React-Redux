@@ -3,6 +3,7 @@ import { UncontrolledAlert } from 'reactstrap'
 import {BookList} from './BookList'
 import { Button, Input } from 'reactstrap'
 import { connect } from 'react-redux'
+import { incCounter, decCounter, addNewBook } from '../store/actions/actionCreators'
 
 
 export class AddBook extends Component {
@@ -18,23 +19,12 @@ export class AddBook extends Component {
       books: [],
       visible: false
     }
-    this.onDismiss = this.onDismiss.bind(this);
+    this.onDismiss = this.onDismiss.bind(this)
   }
 
   onDismiss() {
-    this.setState({ visible: false });
+    this.setState({ visible: false })
 
-  }
-
-  componentDidMount() {
-    let url = 'http://localhost:8080/api/books'
-    fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      this.setState({
-        books: json
-      })
-    })
   }
 
   handleAddBookTextBox = (e) => {
@@ -44,6 +34,7 @@ export class AddBook extends Component {
   }
 
   handleAddBookSubmit = (e) => {
+
     fetch('http://localhost:8080/api/books', {
       method: 'POST',
       headers: {
@@ -57,8 +48,8 @@ export class AddBook extends Component {
         imageURL: this.state.imageURL
       })
     })
-    this.setState({ visible: true });
-    setTimeout(() => this.props.history.push('/view-all-books'),2000)
+    this.setState({ visible: true })
+    setTimeout(() => this.props.history.push('/view-all-books'),1000)
     e.preventDefault()
   }
 
@@ -77,23 +68,23 @@ export class AddBook extends Component {
           <UncontrolledAlert color="info" isOpen={this.state.visible}>
             The book has been added!
           </UncontrolledAlert>
-
         </form>
-    </div>
+      </div>
     )
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    ctr: state.counter // this.props.ctr (ctr = counter)
+    ctr: state.ctr.counter, // this.props.ctr (ctr = counter)
+    books: state.books.books
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onIncrementCounter: () => dispatch({type: 'INC_COUNTER'}),
-    onDecrementCounter: () => dispatch({type: 'DEC_COUNTER'})  // this.props.onIncrementCounter
+    onIncrementCounter: () => dispatch(incCounter()),
+    onDecrementCounter: () => dispatch(decCounter()),  // this.props.onIncrementCounter
   }
 }
 

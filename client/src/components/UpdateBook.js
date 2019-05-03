@@ -15,7 +15,6 @@ export class UpdateBook extends Component {
   }
 
   componentDidMount() {
-
     let url = 'http://localhost:8080/api/books'
     fetch(url)
     .then(response => response.json())
