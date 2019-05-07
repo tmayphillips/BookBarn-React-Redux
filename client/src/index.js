@@ -5,7 +5,7 @@ import {transitions, positions, Provider as AlertProvider } from 'react-alert'
 import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import {BaseLayout} from './components/BaseLayout'
+import BaseLayout from './components/BaseLayout'
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import {AddBook} from './components/AddBook'
 import {BookList} from './components/BookList'
@@ -17,13 +17,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import counterReducer from './store/reducers/counter'
 import booksReducer from './store/reducers/books'
+import reducer from './store/reducers/reducer'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { setAuthenticationHeader } from './utils/authenticate'
+import requireAuth from './components/requireAuth'
 
 const rootReducer = combineReducers({
   ctrReducer: counterReducer,
-  booksReducer: booksReducer
+  booksReducer: booksReducer,
+  reducer: reducer
 })
 
 // composeEnhancers is only for debugging purposes
@@ -37,19 +40,18 @@ setAuthenticationHeader(localStorage.getItem('jsonwebtoken'))
 
 ReactDOM.render(
   <Provider store = {store}>
-  <BrowserRouter>
-  <BaseLayout>
-    <Switch>
-      <Route path="/view-all-books" exact component={BookList} />
-      <Route path="/add-book" exact component={AddBook} />
-      <Route path="/books/details/:id" exact component={BookDetails} />
-      <Route path="/" exact component={App} />
-      <Route path="/books/search" exact component={Search} />
-      <Route path="/login" exact component={Login} />
-      <Route path="/register" exact component={Register} />
-    </Switch>
-  </BaseLayout>
-  </BrowserRouter>
+    <BrowserRouter>
+      <BaseLayout>
+        <Switch>
+          <Route path="/view-all-books" exact component={BookList} />
+          <Route path="/books/details/:id" component={BookDetails} />
+          <Route path="/" exact component={App} />
+          <Route path="/books/search" exact component={Search} />
+          <Route path="/login" exact component={Login} />
+          <Route path="/register" exact component={Register} />
+        </Switch>
+      </BaseLayout>
+    </BrowserRouter>
   </Provider>
 
   ,document.getElementById('root'))

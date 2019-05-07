@@ -10,18 +10,8 @@ class Search extends Component {
     this.state = {
       searchTerm: '',
       bookID: '',
-      Alerts: [
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false},
-        {visible: false}
-      ]
+      bookTitle: '',
+      bookURL: '',
     }
     this.onDismiss = this.onDismiss.bind(this)
   }
@@ -40,17 +30,20 @@ class Search extends Component {
     this.props.onBookFetched(this.state.searchTerm)
   }
 
-  handleAddOwn = (singleBook,index) => {
+  handleAddOwn = (userID,bookID,bookTitle, bookURL,index) => {
     fetch('http://localhost:8080/api/books', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        bookID: singleBook
+        userID: userID,
+        bookID: bookID,
+        bookTitle: bookTitle,
+        bookURL: bookURL
       })
     })
-    this.changeActive(index)
+    // this.changeActive(index)
   }
 
   handleAddFavorites = (singleBook,index) => {
@@ -63,7 +56,7 @@ class Search extends Component {
         bookID: singleBook
       })
     })
-    this.changeActive(index)
+    // this.changeActive(index)
   }
 
   handleAddWishlist = (singleBook,index) => {
@@ -76,24 +69,25 @@ class Search extends Component {
         bookID: singleBook
       })
     })
-    this.changeActive(index)
+    // this.changeActive(index)
   }
 
-  changeActive(index) {
-    var alertArray = this.state.Alerts;
-    for (var i = 0; i < this.state.Alerts.length; i++) {
-      let visible = !alertArray[i].visible;
-      if (index - 1 === index) {
-        alertArray[i].visible = false;
-      } else {
-        alertArray[i].visible = true;
-      }
-    }
-    this.setState({Alerts : alertArray});
-  }
+  // changeActive(index) {
+  //   var alertArray = this.state.Alerts;
+  //   for (var i = 0; i < this.state.Alerts.length; i++) {
+  //     let visible = !alertArray[i].visible;
+  //     if (index - 1 === index) {
+  //       alertArray[i].visible = false;
+  //     } else {
+  //       alertArray[i].visible = true;
+  //     }
+  //   }
+  //   this.setState({Alerts : alertArray});
+  // }
 
 
   render() {
+    let userID = this.props.userID
     let books = this.props.bookList
     let bookItems = books.map((book,index) => {
       console.log(book);
@@ -101,7 +95,7 @@ class Search extends Component {
         <div key={index}>
           <img src={book.volumeInfo.imageLinks.smallThumbnail} />
           <li>{book.volumeInfo.title}</li>
-          <Button color="info" onClick={() => this.handleAddOwn(book.id,index)} type="button">Own It</Button>
+          <Button color="info" onClick={() => this.handleAddOwn(userID,book.id,book.volumeInfo.title, book.volumeInfo.imageLinks.smallThumbnail,index)} type="button">Own It</Button>
           <Button color="info" onClick={() => this.handleAddFavorites(book.id)} type="submit">Favorites</Button>
           <Button color="info" onClick={() => this.handleAddWishlist(book.id)} type="submit">Wishlist</Button>
           <Button color="info" onClick={() => this.handleDetails(book.id)} type="submit">Details</Button>
@@ -128,7 +122,8 @@ class Search extends Component {
     return {
       //bookList: state.books.filter(p => p.userId == 1)
       bookList: state.booksReducer.books,
-      searchTerm: state.booksReducer.searchTerm
+      searchTerm: state.booksReducer.searchTerm,
+      userID: state.reducer.userID
     }
   }
 

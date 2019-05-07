@@ -1,27 +1,18 @@
-import * as actionTypes from './actions/actionTypes'
+import * as actionTypes from '../actions/actionTypes'
+import {connect} from 'react-dom'
 
 // set up the initial state
 const initialState = {
   counter: 0, // each one is called a slice
   books: [],
-  inAuthenticated: false
+  isAuthenticated: false,
+  userID: ''
 }
 
 // create the reducer
 const rootReducer = (state = initialState, action) => {
 
   switch(action.type) {
-    case actionTypes.INC_COUNTER:
-      return {
-        ...state,
-        counter: state.counter + 1,
-      }
-
-    case actionTypes.DEC_COUNTER:
-      return {
-        ...state,
-        counter: state.counter - 1,
-      }
 
     case actionTypes.ADD_NEW_BOOK:
       return {
@@ -29,10 +20,11 @@ const rootReducer = (state = initialState, action) => {
         books: state.books.concat(action.payload)
       }
 
-    case 'ON_AUTHENTICATED':
+    case actionTypes.ON_AUTHENTICATED:
       return {
         ...state,
-        isAuthenticated: action.token != null ? true : false
+        isAuthenticated: action.token != null ? true : false,
+        userID: action.userID
       }
 
     default:
