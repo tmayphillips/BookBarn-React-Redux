@@ -10,6 +10,8 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import {AddBook} from './components/AddBook'
 import {BookList} from './components/BookList'
 import {BookDetails} from './components/BookDetails'
+import Register from './components/Register'
+import Login from './components/Login'
 import Search from './components/Search'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
@@ -17,6 +19,7 @@ import counterReducer from './store/reducers/counter'
 import booksReducer from './store/reducers/books'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
+import { setAuthenticationHeader } from './utils/authenticate'
 
 const rootReducer = combineReducers({
   ctrReducer: counterReducer,
@@ -29,6 +32,8 @@ const store = createStore(rootReducer,composeEnhancers(
     applyMiddleware(thunk)
   ))
 
+setAuthenticationHeader(localStorage.getItem('jsonwebtoken'))
+
 
 ReactDOM.render(
   <Provider store = {store}>
@@ -40,6 +45,8 @@ ReactDOM.render(
       <Route path="/books/details/:id" exact component={BookDetails} />
       <Route path="/" exact component={App} />
       <Route path="/books/search" exact component={Search} />
+      <Route path="/login" exact component={Login} />
+      <Route path="/register" exact component={Register} />
     </Switch>
   </BaseLayout>
   </BrowserRouter>

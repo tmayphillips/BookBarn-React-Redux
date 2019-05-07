@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "ztqhqoyd",
+    "password": "DAbfFvWNFn96ErfDuWubxbjWnenp4D-T",
+    "database": "ztqhqoyd",
+    "host": "hansken.db.elephantsql.com",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "ztqhqoyd",
+    "password": "DAbfFvWNFn96ErfDuWubxbjWnenp4D-T",
+    "database": "ztqhqoyd",
+    "host": "hansken.db.elephantsql.com",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "ztqhqoyd",
+    "password": "DAbfFvWNFn96ErfDuWubxbjWnenp4D-T",
+    "database": "ztqhqoyd",
+    "host": "hansken.db.elephantsql.com",
+    "dialect": "postgres"
+  }
+}

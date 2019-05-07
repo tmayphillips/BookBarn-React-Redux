@@ -25,9 +25,6 @@ const booksReducer = (state = initialState, action) => {
         ...state,
         searchTerm: action.value
       }
-
-    default:
-      console.log("Oops something is wrong");
   }
 
   return state
