@@ -2,23 +2,27 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+const jwt = require('jsonwebtoken')
+const sequelize = require('sequelize')
+const bcrypt = require('bcrypt')
+const models = require('./models')
 const PORT = 8080
 
 app.use(cors())
 app.use(bodyParser.json())
 
-let books = [
-  {title: 'Ulysses', genre: 'horror', publisher: 'cable', year: '2001', imageURL: 'https://en.wikipedia.org/wiki/Ulysses_(novel)#/media/File:JoyceUlysses2.jpg'}
-]
+let books = []
+let favorites = []
+let wishlist = []
+// const users = [
+//   {username: 'tiffany', password: 'password'},
+//   {username: 'johndoe', password: 'password'}
+// ]
 
 app.post('/api/books',(req,res) => {
-  let title = req.body.title
-  let genre = req.body.genre
-  let publisher = req.body.publisher
-  let year = req.body.year
-  let imageURL = req.body.imageURL
+  let bookID = req.body.bookID
 
-  books.push({title: title, genre: genre, publisher: publisher, year: year, imageURL: imageURL})
+  books.push({bookID: bookID})
   res.json({message: 'Book added successfully'})
 })
 
@@ -26,8 +30,29 @@ app.get('/api/books',(req,res) => {
   res.json(books)
 })
 
+app.post('/api/favorites',authenticate,(req,res) => {
+  let bookID = req.body.bookID
 
-app.post('/api/deleteBook',(req,res) => {
+  favorites.push({bookID: bookID})
+  res.json({message: 'Book added successfully'})
+})
+
+app.get('/api/favorites',authenticate,(req,res) => {
+  res.json(favorites)
+})
+
+app.post('/api/wishlist',authenticate,(req,res) => {
+  let bookID = req.body.bookID
+
+  wishlist.push({bookID: bookID})
+  res.json({message: 'Book added successfully'})
+})
+
+app.get('/api/wishlist',(req,res) => {
+  res.json(wishlist)
+})
+
+app.post('/api/deleteBook',authenticate,(req,res) => {
   console.log("Delete Book");
   let alterBook = req.body.alterBook
   console.log(alterBook)
@@ -38,66 +63,119 @@ app.post('/api/deleteBook',(req,res) => {
   res.json(books)
 })
 
-app.get('/api/deleteBook',(req,res) => {
-  res.json(books)
+app.post('/api/deleteFavorite',authenticate,(req,res) => {
+  console.log("Delete Favorite Book");
+  let alterFavorite = req.body.alterBook
+  console.log(alterFavorite)
+
+  favorites = favorites.filter((favorite) => {
+    return favorite.title != alterFavorite
+  })
+  res.json(favorites)
 })
 
-app.post('/api/updateBook',(req,res) => {
-  console.log("Update Book");
-  let alterBook = req.body.alterBook
-  let title = req.body.title
-  let genre = req.body.genre
-  let publisher = req.body.publisher
-  let year = req.body.year
-  let imageURL = req.body.imageURL
-  console.log(alterBook);
-  let updatedBooks = books.map((book) => {
-    if (book.title == alterBook) {
-      if (title == '') {
-        book.title = book.title
-      }
-        else {
-        book.title = title
-        }
-      if (genre == '') {
-        book.genre = book.genre
-      }
-        else {
-        book.genre = genre
-        }
-      if (publisher == '') {
-        book.publisher = book.publisher
-      }
-        else {
-        book.publisher = publisher
-        }
-      if (year == '') {
-        book.year = book.year
-      }
-        else {
-        book.year = year
-        }
-      if (imageURL == '') {
-        book.imageURL = book.imageURL
-      }
-        else {
-        book.imageURL = imageURL
-        }
-    }
-    else if (book.title != alterBook.title) {
-      book.title = book.title
-      book.genre = book.genre
-      book.publisher = book.publisher
-      book.year = book.year
-      book.imageURL = book.imageURL
-    }
+app.get('/api/deleteFavorite',authenticate,(req,res) => {
+  res.json(favorites)
+})
+
+app.post('/api/deleteWishlist',authenticate,(req,res) => {
+  console.log("Delete Wishlist Book");
+  let alterWishlist = req.body.alterBook
+  console.log(alterWishlist)
+
+  wishlist = wishlist.filter((book) => {
+    return booke.title != alterWishlist
   })
-  res.json(updatedBooks)
+  res.json(wishlist)
+})
+
+app.get('/api/deleteWishlist',authenticate,(req,res) => {
+  res.json(wishlist)
 })
 
 app.get('/books/:bookId',(req,res) => {
   let bookId = req.params.bookId
 })
+
+app.post('/login',(req,res) => {
+  let username = req.body.username
+  let password = req.body.password
+
+  models.User.findOne({
+  where: {
+    username: username,
+  }
+})
+.then(function(user) {
+  if (user == null) {
+    console.log("user does not exist")
+    res.redirect('/login')
+  }
+  else {
+    bcrypt.compare(password, user.password, function(err, result) {
+      if(result) {
+        if(user) {
+          jwt.sign({ foo: 'bar'},
+          'secret',
+          function(err, token) {
+            if(token) {
+              res.json({token: token})
+            } else {
+              res.status(401).json({message: 'Unable to generate token'})
+            }
+          })
+        }
+        res.render('/', {user: user})
+      }
+    })
+  }
+})
+})
+
+app.post('/register',(req,res) => {
+  console.log("register post started");
+  let username = req.body.username
+  let password = req.body.password
+
+  console.log("username and password assigned");
+
+  bcrypt.hash(password, 6, function(err, hash) {
+    let user = {
+      username : username,
+      password : hash
+    }
+
+    console.log("bcrypt user created");
+    models.User.create(user).then(user => {
+      console.log("model created");
+      res.render('login')
+      console.log(user)
+    })
+  })
+})
+
+app.get('/register',(req,res) => {
+  res.status(200).send()
+})
+
+function authenticate(req,res,next) {
+  let headers = req.headers['authorization']
+  let token = headers.split(' ')[1]
+  console.log(token)
+  jwt.verify(token,'secret',(err,decoded) => {
+    if(decoded) {
+      if(decoded.username) {
+        next()
+      } else {
+        res.status(401).json({message: 'Token Invalid'})
+      }
+    } else {
+      res.status(401).json({message: 'Token Invalid'})
+    }
+    console.log(decoded);
+  })
+}
+
 
 app.listen(PORT,() => {
   console.log('Server is running')

@@ -20,9 +20,6 @@ const counterReducer = (state = initialState, action) => {
         ...state,
         counter: state.counter - 1,
       }
-
-    default:
-      console.log("Oops something is wrong");
   }
 
   return state

@@ -29,6 +29,12 @@ const rootReducer = (state = initialState, action) => {
         books: state.books.concat(action.payload)
       }
 
+    case 'ON_AUTHENTICATED':
+      return {
+        ...state,
+        isAuthenticated: action.token != null ? true : false
+      }
+
     default:
       console.log("Oops something is wrong");
   }
