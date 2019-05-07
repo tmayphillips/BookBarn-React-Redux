@@ -27,19 +27,19 @@ export class BookList extends Component {
     })
   }
 
-  handleDeleteBook = (alterBook) => {
+  handleDeleteBook = (bookID) => {
     fetch('http://localhost:8080/api/deleteBook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        alterBook: alterBook
+        bookID: bookID
       })
     })
   }
 
-  handleUpdateBook = (alterBook) => {
+  handleUpdateBook = (book) => {
     this.props.history.push(`/update-books/${alterBook}`)
   }
 
@@ -59,12 +59,11 @@ export class BookList extends Component {
       return (
         <div>
           <li key={index}>
-            <h3>Title: {book.title}</h3>
-            <h5>Publisher: {book.publisher}</h5>
-            <h5>Year: {book.year}</h5>
-            <button onClick={() => this.handleDeleteBook(alterBook.title)}>Delete</button>
-            <button onClick={() => this.handleUpdateBook(alterBook.title)}>Update</button>
-            <button><Link to='/books/${alterBook.title}'>Book Detail</Link></button>
+            <img src={book.bookURL} />
+            <h3>Title: {book.bookTitle}</h3>
+            <button onClick={() => this.handleDeleteBook(book.bookID)}>Delete</button>
+            <button onClick={() => this.handleUpdateBook(book.bookID)}>Update</button>
+            <button><Link to='/books/${book.bookID}'>Book Detail</Link></button>
           </li>
         </div>
       )

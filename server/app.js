@@ -10,19 +10,19 @@ const PORT = 8080
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(express.static('public'))
 
 let books = []
 let favorites = []
 let wishlist = []
-// const users = [
-//   {username: 'tiffany', password: 'password'},
-//   {username: 'johndoe', password: 'password'}
-// ]
 
 app.post('/api/books',(req,res) => {
+  let userID = req.body.userID
   let bookID = req.body.bookID
+  let bookTitle = req.body.bookTitle
+  let bookURL = req.body.bookURL
 
-  books.push({bookID: bookID})
+  books.push({userID: userID, bookID: bookID, bookTitle: bookTitle, bookURL: bookURL})
   res.json({message: 'Book added successfully'})
 })
 
@@ -52,14 +52,16 @@ app.get('/api/wishlist',(req,res) => {
   res.json(wishlist)
 })
 
-app.post('/api/deleteBook',authenticate,(req,res) => {
+app.post('/api/deleteBook',(req,res) => {
   console.log("Delete Book");
-  let alterBook = req.body.alterBook
-  console.log(alterBook)
+  let bookID = req.body.bookID
+  console.log(bookID);
+  console.log(books);
 
   books = books.filter((book) => {
-    return book.title != alterBook
+    return book.id != bookID
   })
+  console.log(books);
   res.json(books)
 })
 
@@ -115,17 +117,16 @@ app.post('/login',(req,res) => {
     bcrypt.compare(password, user.password, function(err, result) {
       if(result) {
         if(user) {
-          jwt.sign({ foo: 'bar'},
+          jwt.sign({ userID: user.id},
           'secret',
           function(err, token) {
             if(token) {
-              res.json({token: token})
+              res.json({token: token, userID: user.id})
             } else {
               res.status(401).json({message: 'Unable to generate token'})
             }
           })
         }
-        res.render('/', {user: user})
       }
     })
   }
@@ -148,7 +149,6 @@ app.post('/register',(req,res) => {
     console.log("bcrypt user created");
     models.User.create(user).then(user => {
       console.log("model created");
-      res.render('login')
       console.log(user)
     })
   })
