@@ -17,17 +17,35 @@ let favorites = []
 let wishlist = []
 
 app.post('/api/books',(req,res) => {
-  let userID = req.body.userID
-  let bookID = req.body.bookID
-  let bookTitle = req.body.bookTitle
-  let bookURL = req.body.bookURL
+  let userid = req.body.userID
+  let bookid = req.body.bookID
+  let booktitle = req.body.bookTitle
+  let bookurl = req.body.bookURL
 
-  books.push({userID: userID, bookID: bookID, bookTitle: bookTitle, bookURL: bookURL})
+  console.log(bookid);
+
+  let book = {
+    userid: userid,
+    bookid: bookid,
+    booktitle: booktitle,
+    bookurl: bookurl
+  }
+
+  console.log(book);
+
+  models.Own.create(book).then(book => {
+    console.log("model created");
+    console.log(book)
+  })
+
   res.json({message: 'Book added successfully'})
 })
 
 app.get('/api/books',(req,res) => {
-  res.json(books)
+  models.Own.findAll({
+  }).then(bookList => {
+    res.json({bookList: bookList})
+  })
 })
 
 app.post('/api/favorites',authenticate,(req,res) => {
@@ -55,14 +73,12 @@ app.get('/api/wishlist',(req,res) => {
 app.post('/api/deleteBook',(req,res) => {
   console.log("Delete Book");
   let bookID = req.body.bookID
-  console.log(bookID);
-  console.log(books);
 
-  books = books.filter((book) => {
-    return book.id != bookID
+  models.Own.destroy({
+    where: {
+      id: bookID
+    }
   })
-  console.log(books);
-  res.json(books)
 })
 
 app.post('/api/deleteFavorite',authenticate,(req,res) => {
