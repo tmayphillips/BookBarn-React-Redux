@@ -21,7 +21,7 @@ import reducer from './store/reducers/reducer'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { setAuthenticationHeader } from './utils/authenticate'
-import requireAuth from './components/requireAuth'
+
 
 const rootReducer = combineReducers({
   ctrReducer: counterReducer,

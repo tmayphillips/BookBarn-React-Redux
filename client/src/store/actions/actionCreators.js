@@ -32,6 +32,5 @@ export const bookFetched = (searchTerm) => {
         console.log(json)
         dispatch({type: actionTypes.BOOK_FETCHED, books: json.items})
       })
-
   }
 }
