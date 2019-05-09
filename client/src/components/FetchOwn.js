@@ -20,6 +20,7 @@ class FetchOwn extends Component {
             <img src={book.bookurl}/>
             <p>{book.booktitle}</p>
             <button onClick={() => this.handleDeleteBook(book.id)} type="submit">Delete</button>
+            <button onClick={() => this.handleBookDetails(book.id)} type="submit">Details</button>
           </div>
         )
       })
